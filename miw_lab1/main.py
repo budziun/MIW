@@ -24,6 +24,16 @@ y = len(rows_d)
 print("Szerokość",x)
 print("Wysokość",y)
 
-for i in range(y):
-    for j in range(x):
-        print(f'Wartość w {rows_d[i]} {cols_d[j]}: {data[i][j]}')
+for j in range(x - 1):
+    print(f"Sprawdzanie kolumny {cols_d[j]}")
+
+    for i in range(y):
+        value = data[i][j]
+
+        decision = data[i][x - 1]
+
+        if decision == 0:
+            print(f"Wartość w {rows_d[i]} {cols_d[j]}: {value}, decyzja: {decision} - Przerwanie dla tej kolumny")
+            break
+        else:
+            print(f"Wartość w {rows_d[i]} {cols_d[j]}: {value}, decyzja: {decision} - Kontynuujemy")
