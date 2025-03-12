@@ -1,3 +1,18 @@
+#D1 Deszczowa Goraco Wysoka Slaby Tak
+#D2 Pochmurna Lagodnie Wysoka Slaby Tak
+#D3 Sloneczna Chlodno Wysoka Mocny Tak
+#D4 Sloneczna Goraco Wysoka Mocny Tak
+#D5 Pochmurna Goraco Normalna Mocny Tak
+#D6 Sloneczna Chlodno Wysoka Slaby Tak
+#D7 Deszczowa Goraco Wysoka Mocny Tak
+#D8 Deszczowa Chlodno Wysoka Mocny Tak
+#D9 Deszczowa Lagodnie Normalna Mocny Tak
+#D10 Deszczowa Lagodnie Wysoka Mocny Nie
+#D11 Sloneczna Chlodno Normalna Mocny Nie
+#D12 Deszczowa Lagodnie Normalna Slaby Nie
+#D13 Pochmurna Goraco Wysoka Slaby Nie
+#D14 Sloneczna Goraco Normalna Mocny Nie
+
 file = open("SystemDecyzyjny.txt", "r")
 
 content = file.read().strip()
@@ -31,8 +46,6 @@ for line in lines:
 
     # Reszta to atrybuty
     atrybuty = elementy[:-1]
-
-    # Dodaj wiersz danych
     data.append(atrybuty + [decyzja])
 
 kolumny = ["Pogoda", "Temperatura", "Wilgotnosc", "Wiatr", "d"]
@@ -109,7 +122,7 @@ for indeks in range(len(data)):
     if not regula_znaleziona:
         print(f"z {wiersze[indeks]} Nie mo")
 
-print("\nReguły II rzędu")
+print("Reguły II rzędu")
 
 for indeks in range(len(data)):
     if indeks not in obiekty2:
@@ -162,14 +175,14 @@ for indeks in range(len(data)):
 
 # Sprawdzenie czy wszystkie obiekty zostały pokryte
 if obiekty2:
-    print("\nNiepokryte obiekty: ")
+    print("Niepokryte obiekty: ")
     for idx in obiekty2:
         print(f"{wiersze[idx]}: {data[idx]}")
 else:
-    print("\nWszystkie obiekty pokryte :)")
+    print("Wszystkie obiekty pokryte :)")
 
 # Podsumowanie
-print("\nWygenerowane reguły I i II rzędu")
+print("Wygenerowane reguły I i II rzędu")
 for j, (reguły_warunki, decyzja, pokryte_obiekty) in enumerate(reguly):
     decyzja_tekst = "Tak" if decyzja == 1 else "Nie"
     if len(reguły_warunki) == 1:

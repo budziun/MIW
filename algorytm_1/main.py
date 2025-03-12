@@ -142,7 +142,7 @@ if obiekty2:
 else:
     print("Wszystkie obiekty pokryte :)")
 
-# Podsumowanie
+
 print("Wygenerowane reguły I i II rzędu")
 for j, (reguły_warunki, decyzja, pokryte_obiekty) in enumerate(reguly):
     if len(reguły_warunki) == 1:
@@ -153,3 +153,11 @@ for j, (reguły_warunki, decyzja, pokryte_obiekty) in enumerate(reguly):
         regula2 += f" ==> (d= {decyzja})"
 
     print(f"Reguła {j+1}: {regula2}")
+
+######## naprawic reguly II rzędu aby po wyrzuceniu z rozważań nie sprawdzoało pokrytych już obiektów #########
+########## alogrytm konczy sie jak nie ma obiektow lub jesli przejdziemy po ostatnim możliwym obieckie ######
+###### algorytm usuwa znalezione w pierwszym rzędzie obeikty dla których mamy reguły ######
+## Reguły II rzędu
+## z o1 (a3 = 1) ∧ (a4 = 1) ==> (d = 1)[2], wyrzucamy z rozważań obiekt o1, o2
+## prawidłowe wyświetlanie z o1 (a3 = 1) ∧ (a4 = 1) ==> (d = 1)[2], wyrzucamy z rozważań obiekt o1
+## bo obiekt o2 został już pokryty w regule pierwszego rzędu i został wykreślony
