@@ -1,18 +1,17 @@
 lista_obiektow = []
-kolumny_a = ["pogoda", "temperatura", "wilgotnosc", "wiatr"]
-with open("SystemDecyzyjny.txt", "r") as plik:
+kolumny_a = []
+with open("values.txt", "r") as plik:
     linijki = plik.readlines()
+    ile_kolumn = len(linijki[0].split())
+    kolumny_a = [f"a{i + 1}" for i in range(ile_kolumn - 1)]
     for linijka in linijki:
-        elementy = linijka.strip().split()
-        if len(elementy) >= 6:
-            wiersz_danych = {}
-            indeks_obiektu = elementy[0]
-            for i in range(len(kolumny_a)):
-                wiersz_danych[kolumny_a[i]] = elementy[i + 1]
-            wiersz_danych["d"] = elementy[-1]
+        liczby_z_linii = list(map(int, linijka.split()))
+        wiersz_danych = {}
+        for i in range(len(kolumny_a)):
+            wiersz_danych[kolumny_a[i]] = liczby_z_linii[i]
 
-            wiersz_danych["indeks"] = indeks_obiektu
-            lista_obiektow.append(wiersz_danych)
+        wiersz_danych["d"] = liczby_z_linii[-1]
+        lista_obiektow.append(wiersz_danych)
 for obiekt in lista_obiektow:
     print(obiekt)
 
@@ -74,9 +73,10 @@ for rozmiar_grupy in range(1, len(kolumny_a) + 1):
                     ilosc_pasujacych += 1
                     if inny_indeks not in juz_uzyte_obiekty:
                         nowo_pokryte.append(inny_indeks)
-            tekst_reguly = f"z D{indeks_obiektu+1}: "
-            tekst_reguly += f"{''.join(f'({a}={biezacy_obiekt[a]})' for a in grupa_atrybutow)} -> (d={biezacy_obiekt['d']})"
-            if ilosc_pasujacych > 1:
+            tekst_reguly = f"z o{indeks_obiektu+1}: "
+            tekst_reguly += f"{''.join(f'({a}={biezacy_obiekt[a]})' for a in grupa_atrybutow)}"
+            tekst_reguly += f" -> (d={biezacy_obiekt['d']})"
+            if ilosc_pasujacych >1:
                 tekst_reguly += '[' + f"{ilosc_pasujacych}" + ']'
             if tekst_reguly not in wynikowe_reguly:
                 wynikowe_reguly.append(tekst_reguly)
