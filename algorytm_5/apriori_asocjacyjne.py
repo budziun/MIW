@@ -2,7 +2,7 @@ from collections import Counter
 import itertools
 from itertools import combinations
 
-# import danych (6 paragonów) i wyswietlanie
+# Dane wejściowe - transakcje (paragony)
 d = [
     ['kapusta', 'ogórki', 'pomidory', 'kabaczki'],
     ['ogórki', 'pomidory', 'kabaczki'],
@@ -11,65 +11,76 @@ d = [
     ['ogórki', 'grzybki', 'żołądkowa'],
     ['żołądkowa', 'ogórki', 'pomidory']
 ]
+print("D:")
 for row in d:
     print(row)
-
-# ustalenie progu częstości
+# Próg częstości
 prog = 2
 
-counter = Counter()
-for row in d:
-    counter.update(row)
-
-# budowanie zbioru F1 w oparciu o prog czestosci
-F1 = [item for item, count in counter.items() if count >= prog]
-F1 = sorted(F1)
-
-print("\nZbiór F1")
-print(F1)
-
-# kombinacje bez powtórzeń dla F1
-C2 = list(itertools.combinations(F1, 2))
-print("\nKombinacje bez powtórzeń C2:")
-print(C2)
-
-def licznik_d_para(para, d):
+# zliczanie wystąpienia zbioru elementów w danych
+def count_occurrences(itemset, transactions):
     count = 0
-    for t in d:
-        if para[0] in t and para[1] in t:
+    for transaction in transactions:
+        if all(item in transaction for item in itemset):
             count += 1
     return count
 
-# budowanie F2 czyli pary z C2 które wystepuja w danych D
-F2 = [para for para in C2 if licznik_d_para(para, d) >= prog]
+# budowanie zbioru F1 w oparciu o prog czestosci
+counter = Counter()
+for transaction in d:
+    counter.update(transaction)
 
-print("\nF2:")
-print(F2)
+F1 = [item for item, count in counter.items() if count >= prog]
+F1.sort()
 
-# tworzenie kombinacji c3 jezeli na pierwszej pozycji w f2 wystepuje minimum prog razy
-C3 = []
-for i in range(len(F2)):
-    for j in range(i + 1, len(F2)):
-        a1, a2 = F2[i]
-        b1, b2 = F2[j]
-        # sprawdzenie czy jest taki sam pierwszy element w obu sprawdzanych
-        if a1 == b1:
-            # tworzenie i dodawanie do c3 trzech elementow (element wspolny 1 i pozsotale 2 oraz 3)
-            candidate = tuple(set([a1, a2, b2]))
-            if candidate not in C3:
-                C3.append(candidate)
+print("\nF1:")
+print(F1)
 
-print("\nC3: ")
-print(C3)
-F2_set = set(F2)
+# lista dla wszystkich zbiorów częstych
+wszystkie_zbiory_czeste = []
+wszystkie_zbiory_czeste.append(F1)
 
-F3 = []
-for i in C3:
-    pary = list(combinations(i, prog))
-    pary = [tuple(sorted(p)) for p in pary]
-    if all(para in F2_set for para in pary):
-        F3.append(i)
+# Start od k=2 (Fk, Ck np. F2 i C2 itd...)
+k = 2
+aktualne_czeste = F1
 
-print("\nPo zastosowaniu własności Apriori, kandydaci pozostali w F3:")
-print(F3)
+while True:
+    # Generowanie Ck na podstawie Fk-1
+    kandydaci = list(combinations(F1, k))
+    print(f"\nC{k}:")
+    print(kandydaci)
+
+    # Sprawdzanie częstości kandydatów - tworzenie Fk
+    czeste_zbiory = []
+    for kandydat in kandydaci:
+        if count_occurrences(kandydat, d) >= prog:
+            # dla k>2 sprawdzamy własność Apriori
+            if k > 2:
+                # wszystkie podzbiory o długości k-1 muszą być częste
+                poprawny = True
+                for podzbior in combinations(kandydat, k - 1):
+                    # sprawdzamy czy podzbiór jest w poprzednim zbiorze częstym
+                    if podzbior not in wszystkie_zbiory_czeste[-1]:
+                        poprawny = False
+                        break
+                if not poprawny:
+                    continue
+            czeste_zbiory.append(kandydat)
+
+    print(f"F{k}:")
+    print(czeste_zbiory)
+
+    # jeśli znaleziono tylko jeden = koniec algorytmu
+    if not czeste_zbiory or len(czeste_zbiory) <= 1:
+        if czeste_zbiory:
+            wszystkie_zbiory_czeste.append(czeste_zbiory)  # dodajemy ostatni zbiór
+            print(f"\nAlgorytm zakończony - znaleziono jeden zbiór częsty w F{k}: {czeste_zbiory[0]}")
+        break
+
+    wszystkie_zbiory_czeste.append(czeste_zbiory)
+    k += 1
+
+print("\nWszystkie znalezione zbiory dla d")
+for i, j in enumerate(wszystkie_zbiory_czeste, 1):
+    print(f"F{i} (zbiory {i}-elementowe): {j}")
 
